@@ -19,7 +19,9 @@ class UtilisateurAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_login';
+
+
+    public const LOGIN_ROUTE = 'app_connexion';
 
     public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
@@ -46,8 +48,8 @@ class UtilisateurAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_homepage'));
+
+        return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
     protected function getLoginUrl(Request $request): string

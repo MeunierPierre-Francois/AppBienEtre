@@ -36,7 +36,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $adresse_rue = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $inscription = null;
 
     #[ORM\Column(nullable: true)]
@@ -195,8 +195,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
-
     public function getPrestataire(): ?Prestataire
     {
         return $this->prestataire;
@@ -263,6 +261,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function isIsVerified(): ?bool
     {
         return $this->isVerified;
     }
