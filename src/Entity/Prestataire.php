@@ -37,10 +37,17 @@ class Prestataire
     #[ORM\OneToMany(mappedBy: 'prestataire', targetEntity: Stage::class)]
     private Collection $stages;
 
+    #[ORM\OneToMany(mappedBy: 'prestataire', targetEntity: Proposer::class)]
+    private Collection $proposers;
+
+
+
+
     public function __construct()
     {
         $this->promotions = new ArrayCollection();
         $this->stages = new ArrayCollection();
+        $this->proposers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -162,6 +169,36 @@ class Prestataire
             // set the owning side to null (unless already changed)
             if ($stage->getPrestataire() === $this) {
                 $stage->setPrestataire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Proposer>
+     */
+    public function getProposers(): Collection
+    {
+        return $this->proposers;
+    }
+
+    public function addProposer(Proposer $proposer): self
+    {
+        if (!$this->proposers->contains($proposer)) {
+            $this->proposers->add($proposer);
+            $proposer->setPrestataire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProposer(Proposer $proposer): self
+    {
+        if ($this->proposers->removeElement($proposer)) {
+            // set the owning side to null (unless already changed)
+            if ($proposer->getPrestataire() === $this) {
+                $proposer->setPrestataire(null);
             }
         }
 

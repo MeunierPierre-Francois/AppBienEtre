@@ -35,19 +35,20 @@
 
 						</ul>
 
-						<div class="d-flex">
-							{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+						{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+							{% if app.user.prestataire %}
 								<a href='#' class="btn btn-success me-2" type="submit">Mon compte</a>
-								<a href={{path('app_connexion')}} class="btn btn-outline-success  me-2" type="submit">Devenir Prestataire</a>
 								<a href={{path('app_logout')}} class="btn btn-outline-danger  me-2" type="submit">Déconnexion</a>
-
 							{% else %}
-								<a href={{path('app_connexion')}} class="btn btn-outline-success  me-2" type="submit">Connexion</a>
-								<a href={{path('app_inscription')}} class="btn btn-success" type="submit">Inscription</a>
+								<a href='#' class="btn btn-success me-2" type="submit">Mon compte</a>
+								<a href={{path('app_prestataire_form')}} class="btn btn-outline-success  me-2" type="submit">Devenir Prestataire</a>
+								<a href={{path('app_logout')}} class="btn btn-outline-danger  me-2" type="submit">Déconnexion</a>
 							{% endif %}
+						{% else %}
+							<a href={{path('app_connexion')}} class="btn btn-outline-success  me-2" type="submit">Connexion</a>
+							<a href={{path('app_inscription')}} class="btn btn-success" type="submit">Inscription</a>
+						{% endif %}
 
-
-						</div>
 					</div>
 				</div>
 			</nav>
