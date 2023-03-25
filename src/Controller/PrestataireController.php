@@ -7,10 +7,10 @@ use App\Entity\Images;
 use App\Entity\Proposer;
 use App\Entity\Utilisateur;
 use App\Form\PrestataireFormType;
+use App\Service\PictureService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use Doctrine\ORM\EntityManagerInterface;
-
+use Symfony\Component\DomCrawler\Image;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class PrestataireController extends AbstractController
 {
     #[Route('/devenir-prestataire', name: 'app_prestataire_form')]
-    public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager): Response
+    public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager, PictureService $pictureService): Response
     {
         $prestataire = new Prestataire();
         $form = $this->createForm(PrestataireFormType::class, $prestataire);
@@ -29,6 +29,18 @@ class PrestataireController extends AbstractController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //On récupère les images
+            $images = $form->get('images')->getData();
+            foreach ($images as $image) {
+                //On définit le dossier de destination
+                $folder = 'prestataires';
+                //On appelle le service d'ajout
+                $fichier = $pictureService->add($image, $folder, 300, 300);
+
+                $img = new Images();
+                $img->setNom($fichier);
+                $prestataire->addImage($img);
+            }
 
             //changer le rôle de l'utilisateur
             $id = $this->getUser()->getId();

@@ -71,7 +71,7 @@ class PictureService
 
         imagecopyresampled($resized_picture, $picture_source, 0, 0, $src_x, $src_y, $width, $height, $squareSize, $squareSize);
 
-        $path = $this->parameterBagInterface->get('image_directory') . $folder;
+        $path = $this->parameterBagInterface->get('images_directory') . $folder;
 
         // On crée le dossier de destination s'il n'existe pas
         if (!file_exists($path . '/mini/')) {
