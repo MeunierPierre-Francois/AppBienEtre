@@ -48,9 +48,6 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-
-
-
             $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,

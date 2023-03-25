@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prestataires
+{% endblock %}
+
+{% block body %}
+	<main class="categories">
+		<h1>Prestataires</h1>
+		<div>
+			<ul>
+				{% for prestataire in prestataires %}
+					<li>{{ prestataire.nom }}</li>
+
+				{% endfor %}
+			</ul>
+		</div>
+	</main>
+{% endblock %}

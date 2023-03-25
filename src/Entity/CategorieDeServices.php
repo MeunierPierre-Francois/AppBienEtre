@@ -30,6 +30,8 @@ class CategorieDeServices
     #[ORM\OneToMany(mappedBy: 'categorie_service', targetEntity: Proposer::class)]
     private Collection $proposers;
 
+
+
     public function __construct()
     {
         $this->proposers = new ArrayCollection();

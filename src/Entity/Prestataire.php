@@ -40,6 +40,13 @@ class Prestataire
     #[ORM\OneToMany(mappedBy: 'prestataire', targetEntity: Proposer::class)]
     private Collection $proposers;
 
+    #[ORM\ManyToMany(mappedBy: 'prestataire', targetEntity: CategorieDeServices::class)]
+    private Collection $categories;
+
+    #[ORM\OneToMany(mappedBy: 'prestataire', targetEntity: Images::class, cascade: ['remove', 'persist'], orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Collection $images = null;
+
 
 
 
@@ -48,6 +55,8 @@ class Prestataire
         $this->promotions = new ArrayCollection();
         $this->stages = new ArrayCollection();
         $this->proposers = new ArrayCollection();
+        $this->images = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,6 +208,66 @@ class Prestataire
             // set the owning side to null (unless already changed)
             if ($proposer->getPrestataire() === $this) {
                 $proposer->setPrestataire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CategorieDeServices>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(CategorieDeServices $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+            $category->setPrestataire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(CategorieDeServices $category): self
+    {
+        if ($this->categories->removeElement($category)) {
+            // set the owning side to null (unless already changed)
+            if ($category->getPrestataire() === $this) {
+                $category->setPrestataire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setPrestataire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getPrestataire() === $this) {
+                $image->setPrestataire(null);
             }
         }
 
