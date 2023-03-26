@@ -13,10 +13,20 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+use App\Service\CitiesService;
+
 class RegistrationFormType extends AbstractType
 {
+    private $citiesService;
+
+    public function __construct(CitiesService $citiesService)
+    {
+        $this->citiesService = $citiesService;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $cities = $this->citiesService->getCities();
+
         $builder
             ->add('email', EmailType::class)
             ->add('plainPassword', PasswordType::class, [
@@ -34,6 +44,15 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+            ])
+            ->add('ville', ChoiceType::class, [
+                'choices' => $cities,
+                'choice_label' => function ($city) {
+                    return $city['ville'];
+                },
+                'placeholder' => 'Choose a city',
+                'mapped' => false,
+                'required' => true,
             ])
             ->add('adresse_num')
             ->add('adresse_rue')

@@ -33,4 +33,26 @@
 			<span class="visually-hidden">Next</span>
 		</button>
 	</div>
+	<div>
+		<h1>Dernier inscrit</h1>
+
+		{% for prestataire in prestataires %}
+			{% for image in prestataire.images %}
+				<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" alt=""/>
+				{{ prestataire.nom }}
+			{% endfor %}
+			<a href="#" type="submit">Voir plus</a>
+		{% endfor %}
+	</div>
+
+	<div>
+		<h1>La Catégories du mois</h1>
+
+		{% for category in categories %}
+			{{category.nom}}
+			{{category.description}}
+			<a href="#" type="submit">Découvrir</a>
+		{% endfor %}
+	</div>
+
 {% endblock %}

@@ -6,13 +6,15 @@
 {% block body %}
 	<main class="categories">
 		<h1>Prestataires</h1>
-		<div>
-			<ul>
-				{% for prestataire in prestataires %}
-					<li>{{ prestataire.nom }}</li>
 
-				{% endfor %}
-			</ul>
-		</div>
+
+		{% for prestataire in prestataires %}
+			{% for image in prestataire.images %}
+				<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" alt=""/>
+				{{ prestataire.nom }}
+			{% endfor %}
+
+		{% endfor %}
+
 	</main>
 {% endblock %}
