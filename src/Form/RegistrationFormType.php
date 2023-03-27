@@ -7,26 +7,23 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-use App\Service\CitiesService;
+
 
 class RegistrationFormType extends AbstractType
 {
-    private $citiesService;
 
-    public function __construct(CitiesService $citiesService)
-    {
-        $this->citiesService = $citiesService;
-    }
+
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $cities = $this->citiesService->getCities();
-
         $builder
             ->add('email', EmailType::class)
             ->add('plainPassword', PasswordType::class, [
@@ -45,17 +42,28 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
+
             ->add('ville', ChoiceType::class, [
-                'choices' => $cities,
-                'choice_label' => function ($city) {
-                    return $city['ville'];
-                },
-                'placeholder' => 'Choose a city',
-                'mapped' => false,
+                'choices' => [],
+                'placeholder' => 'Sélectionnez une ville',
                 'required' => true,
+                'attr' => ['class' => 'form-control'],
             ])
+            ->add('cp', TextType::class, [
+                'label' => 'Code postal',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('region', TextType::class, [
+                'label' => 'Région',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+
             ->add('adresse_num')
+
             ->add('adresse_rue')
+
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [

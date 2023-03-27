@@ -30,11 +30,15 @@ class CategorieDeServices
     #[ORM\OneToMany(mappedBy: 'categorie_service', targetEntity: Proposer::class)]
     private Collection $proposers;
 
+    #[ORM\OneToMany(mappedBy: 'categorie_service', targetEntity: Images::class, cascade: ['remove', 'persist'], orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Collection $images = null;
 
 
     public function __construct()
     {
         $this->proposers = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +118,37 @@ class CategorieDeServices
             // set the owning side to null (unless already changed)
             if ($proposer->getCategorieService() === $this) {
                 $proposer->setCategorieService(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setCategorieService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getCategorieService() === $this) {
+                $image->setCategorieService(null);
             }
         }
 

@@ -23,6 +23,9 @@ class PrestataireController extends AbstractController
     #[Route('/devenir-prestataire', name: 'app_prestataire_form')]
     public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager, PictureService $pictureService): Response
     {
+
+
+
         $prestataire = new Prestataire();
         $form = $this->createForm(PrestataireFormType::class, $prestataire);
         $form->handleRequest($request);
@@ -82,6 +85,19 @@ class PrestataireController extends AbstractController
 
         return $this->render('prestataire/liste.html.twig', [
             'prestataires' => $prestataires
+        ]);
+    }
+
+    #[Route('/prestataires/{id}', name: 'app_prestataire_detail')]
+    public function show(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $prestataire = $entityManager->getRepository(Prestataire::class)->find($id);
+        $categories = $entityManager->getRepository(Proposer::class)->findCategoriesByPrestataireId($id);
+
+        return $this->render('prestataire/detail.html.twig', [
+            'prestataire' => $prestataire,
+            'categories' => $categories,
+
         ]);
     }
 }
