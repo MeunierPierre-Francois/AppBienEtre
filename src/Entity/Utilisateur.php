@@ -45,8 +45,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $banni = null;
 
-
-
     #[ORM\OneToOne(mappedBy: 'utilisateur', cascade: ['persist', 'remove'])]
     private ?Prestataire $prestataire = null;
 
@@ -56,7 +54,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne]
     private ?Commune $commune = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Localite $localite = null;
 
     #[ORM\ManyToOne]

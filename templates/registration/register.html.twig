@@ -3,6 +3,7 @@
 {% block title %}Register
 {% endblock %}
 
+
 {% block body %}
 
 	{% for flash_error in app.flashes('verify_email_error') %}
@@ -18,10 +19,11 @@
         }) }}
 	{{ form_row(registrationForm.adresse_rue) }}
 	{{ form_row(registrationForm.adresse_num) }}
-
 	{{ form_row(registrationForm.agreeTerms) }}
 
 	<button type="submit" class="btn">Register</button>
 	{{ form_end(registrationForm) }}
 	<a href="{{ path('app_connexion') }}">Déjà membre?</a>
+
+
 {% endblock %}

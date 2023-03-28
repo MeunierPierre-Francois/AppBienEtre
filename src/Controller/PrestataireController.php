@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Prestataire;
 use App\Entity\Images;
 use App\Entity\Proposer;
+use App\Entity\CategorieDeServices;
 use App\Entity\Utilisateur;
+use App\Form\SearchType;
 use App\Form\PrestataireFormType;
 use App\Service\PictureService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +16,7 @@ use Symfony\Component\DomCrawler\Image;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Paginator\PaginatorInterface;
 
 
 
@@ -23,8 +25,6 @@ class PrestataireController extends AbstractController
     #[Route('/devenir-prestataire', name: 'app_prestataire_form')]
     public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager, PictureService $pictureService): Response
     {
-
-
 
         $prestataire = new Prestataire();
         $form = $this->createForm(PrestataireFormType::class, $prestataire);
@@ -88,10 +88,25 @@ class PrestataireController extends AbstractController
         ]);
     }
 
-    #[Route('/prestataires/{id}', name: 'app_prestataire_detail')]
+    #[Route('/prestataires/profil/{id}', name: 'app_prestataire_detail')]
     public function show(EntityManagerInterface $entityManager, int $id): Response
     {
-        $prestataire = $entityManager->getRepository(Prestataire::class)->find($id);
+        // $prestataire = $entityManager->getRepository(Prestataire::class)->find($id);
+        $prestataire = $entityManager->getRepository(Prestataire::class)
+            ->createQueryBuilder('p')
+            ->leftJoin('p.utilisateur', 'u')
+            ->addSelect('u')
+            ->leftJoin('u.commune', 'c')
+            ->addSelect('c')
+            ->leftJoin('u.localite', 'l')
+            ->addSelect('l')
+            ->leftJoin('u.code_postal', 'cp')
+            ->addSelect('cp')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+
         $categories = $entityManager->getRepository(Proposer::class)->findCategoriesByPrestataireId($id);
 
         return $this->render('prestataire/detail.html.twig', [

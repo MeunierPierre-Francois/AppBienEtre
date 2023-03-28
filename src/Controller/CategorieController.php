@@ -43,4 +43,58 @@ class CategorieController extends AbstractController
             'prestataires' => $prestataires,
         ]);
     }
+
+    /*
+
+    #[Route('/categories/{id}/prestataires', name: 'app_categories_prestataires')]
+public function prestatairesByCategorie(EntityManagerInterface $entityManager, int $id): Response
+{
+    $categorie = $entityManager->getRepository(Categorie::class)->find($id);
+
+    if (!$categorie) {
+        throw $this->createNotFoundException('Cette catégorie n\'existe pas');
+    }
+
+    $prestataires = $entityManager->getRepository(Prestataire::class)
+        ->createQueryBuilder('p')
+        ->innerJoin('p.proposers', 'pr')
+        ->innerJoin('pr.categorie', 'c')
+        ->where('c.id = :id')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult();
+
+    return $this->render('categorie/prestataires.html.twig', [
+        'categorie' => $categorie,
+        'prestataires' => $prestataires,
+    ]);
+}
+////POur le twig////
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Prestataires proposant la catégorie {{ categorie.nom }}{% endblock %}
+
+{% block body %}
+  <h1>Prestataires proposant la catégorie {{ categorie.nom }}</h1>
+
+  {% if prestataires is empty %}
+    <p>Aucun prestataire ne propose cette catégorie pour le moment.</p>
+  {% else %}
+    <ul>
+      {% for prestataire in prestataires %}
+        <li>
+          <h2>{{ prestataire.nom }}</h2>
+          <p>{{ prestataire.description }}</p>
+          <p><strong>Adresse :</strong> {{ prestataire.adresse }}</p>
+          <p><strong>Téléphone :</strong> {{ prestataire.telephone }}</p>
+          <p><strong>Email :</strong> {{ prestataire.email }}</p>
+          <p><strong>Site web :</strong> {{ prestataire.siteWeb }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
+
+    */
 }

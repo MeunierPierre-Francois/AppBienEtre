@@ -19,15 +19,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RegistrationFormType extends AbstractType
 {
-
-
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', EmailType::class)
             ->add('plainPassword', PasswordType::class, [
-
                 'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
@@ -37,27 +33,9 @@ class RegistrationFormType extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-
                         'max' => 4096,
                     ]),
                 ],
-            ])
-
-            ->add('ville', ChoiceType::class, [
-                'choices' => [],
-                'placeholder' => 'Sélectionnez une ville',
-                'required' => true,
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('cp', TextType::class, [
-                'label' => 'Code postal',
-                'required' => false,
-                'attr' => ['class' => 'form-control'],
-            ])
-            ->add('region', TextType::class, [
-                'label' => 'Région',
-                'required' => false,
-                'attr' => ['class' => 'form-control'],
             ])
 
             ->add('adresse_num')

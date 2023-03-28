@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CategorieDeServices;
 use App\Entity\Utilisateur;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
@@ -32,40 +33,21 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UtilisateurAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
 
+
         $user = new Utilisateur();
         $user->setInscription(new \DateTimeImmutable());
         $user->setRoles(['ROLE_USER']);
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        //Récupérer les villes du json et les mettres dans le formulaire
-        $jsonData = file_get_contents(__DIR__ . '/public/json/villes.json');
-        $villes = json_decode($jsonData, true);
-        $villeChoices = array_column($villes, 'ville');
-        $form->get('ville')->getConfig()->setOptions(['choices' => $villeChoices]);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer les données de la ville sélectionnée
-            $villeNom = $form->get('ville')->getData();
-            $cpInput = $form->get('cp');
-            $regionInput = $form->get('region');
-            $cpInput->setData(null);
-            $regionInput->setData(null);
 
-            foreach ($villes as $ville) {
-                if ($ville['ville'] === $villeNom) {
-                    $cpInput->setData($ville['codePostal']);
-                    $regionInput->setData($ville['region']);
-                    break;
-                }
-            }
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
-
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -89,6 +71,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+
         ]);
     }
 

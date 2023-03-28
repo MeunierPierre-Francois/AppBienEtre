@@ -8,8 +8,8 @@
 	<h2>Prestataires proposant ce service :</h2>
 
 	<ul>
-		{% for prestataire in prestataires %}
-			<li>{{ prestataire.nom }}</li>
+		{% for p in proposer %}
+			<li>{{ p.prestataire.nom }}</li>
 		{% endfor %}
 	</ul>
 {% endblock %}
