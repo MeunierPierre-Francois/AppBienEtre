@@ -55,20 +55,22 @@ class ProposerRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findPrestatairesByCategorie($categorieServiceId)
+    public function findPrestataireByCategoriesId($categorieId)
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT pr
-            FROM App\Entity\Proposer pr
-            JOIN pr.categorie_service c
-            JOIN pr.prestataire p
-            WHERE c.id = :categorieServiceId'
-        )->setParameter('categorieServiceId', $categorieServiceId);
+            'SELECT p
+        FROM App\Entity\Prestataire p
+        JOIN App\Entity\Proposer pr
+        WITH p.id = pr.prestataire
+        WHERE pr.categorie_service = :categorieId'
+        )->setParameter('categorieId', $categorieId);
 
         return $query->getResult();
     }
+
+
 
 
     //    /**

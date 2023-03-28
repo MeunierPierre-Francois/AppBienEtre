@@ -68,7 +68,7 @@
 
 					<h2>{{ category.nom }}</h2>
 					<p>{{ category.description }}</p>
-					<a href="#" class="btn btn-primary" type="submit">Découvrir</a>
+					<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-primary" type="submit">Découvrir</a>
 				</div>
 				<div class="col-md-8">
 					<img src="{{ asset('images/Massage_thérapeutique1.jpg') }}" class="img-fluid" alt="{{ category.nom }}">

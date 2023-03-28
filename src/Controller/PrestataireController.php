@@ -26,8 +26,12 @@ class PrestataireController extends AbstractController
     public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager, PictureService $pictureService): Response
     {
 
+
+
+
         $prestataire = new Prestataire();
         $form = $this->createForm(PrestataireFormType::class, $prestataire);
+
         $form->handleRequest($request);
 
 

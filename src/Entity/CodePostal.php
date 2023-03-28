@@ -25,6 +25,10 @@ class CodePostal
     {
         return $this->code_postal;
     }
+    public function __toString()
+    {
+        return $this->code_postal;
+    }
 
     public function setCodePostal(?string $code_postal): self
     {

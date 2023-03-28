@@ -37,6 +37,10 @@ class Localite
     {
         return $this->localite;
     }
+    public function __toString()
+    {
+        return $this->localite;
+    }
 
     public function setLocalite(?string $localite): self
     {

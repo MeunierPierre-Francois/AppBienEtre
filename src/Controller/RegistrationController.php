@@ -33,11 +33,38 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UtilisateurAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
 
+        // On récupère les données pour alimenter les champs de choix
+        $json = file_get_contents(__DIR__ . '/../../public/json/villes.json');
+        $data = json_decode($json, true);
+        // Créer un tableau vide pour stocker les villes, les codes postaux et les régions uniques
+        $villes = [];
+        $codePostaux = [];
+        $regions = [];
+
+        // Parcourir le tableau des données et ajouter les villes, les codes postaux et les régions uniques au tableau correspondant
+        foreach ($data as $item) {
+            if (!in_array($item['ville'], $villes)) {
+                $villes[$item['ville']] = $item['ville'];
+            }
+            if (!in_array($item['codePostal'], $codePostaux)) {
+                $codePostaux[$item['codePostal']] = $item['codePostal'];
+            }
+            if (!in_array($item['region'], $regions)) {
+                $regions[$item['region']] = $item['region'];
+            }
+        }
+        asort($codePostaux, SORT_NUMERIC);
+        asort($villes);
+        asort($regions);
 
         $user = new Utilisateur();
         $user->setInscription(new \DateTimeImmutable());
         $user->setRoles(['ROLE_USER']);
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, $user, [
+            'villes' => $villes,
+            'codePostaux' => $codePostaux,
+            'regions' => $regions,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

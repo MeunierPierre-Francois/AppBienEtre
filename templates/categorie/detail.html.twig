@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ categorie.nom }}
+{% endblock %}
+
+{% block body %}
+	<h1>{{ categorie.nom }}</h1>
+	<p>{{ categorie.description }}</p>
+
+
+	<h2>Prestataires proposant des services dans cette catégorie :</h2>
+	<ul>
+		{% for prestataire in prestataires  %}
+			<li>{{ prestataire.nom }}</li>
+		{% endfor %}
+	</ul>
+
+	<p>Aucun prestataire ne propose de services dans cette catégorie pour le moment.</p>
+{% endblock %}

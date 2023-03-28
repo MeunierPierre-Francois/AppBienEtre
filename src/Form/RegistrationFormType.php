@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Utilisateur;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -37,6 +38,21 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
+            ->add('commune', ChoiceType::class, [
+                'choices' => $options['regions'],
+                'placeholder' => '--Sélectionnez votre région--',
+                'mapped' => 'false',
+            ])
+            ->add('code_postal', ChoiceType::class, [
+                'choices' => $options['codePostaux'],
+                'placeholder' => '--Sélectionnez votre code postal--',
+                'mapped' => 'false',
+            ])
+            ->add('localite', ChoiceType::class, [
+                'choices' => $options['villes'],
+                'placeholder' => '--Sélectionnez votre ville--',
+                'mapped' => 'false',
+            ])
 
             ->add('adresse_num')
 
@@ -56,6 +72,9 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
+            'codePostaux' => [],
+            'regions' => [],
+            'villes' => [],
         ]);
     }
 }
