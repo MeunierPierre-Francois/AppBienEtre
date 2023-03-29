@@ -51,14 +51,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(inversedBy: 'utilisateur', cascade: ['persist', 'remove'])]
     private ?Internaute $internaute = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Commune $commune = null;
 
-    #[ORM\ManyToOne(inversedBy: 'utilisateurs', targetEntity: 'App\entity\Localite')]
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Localite $localite = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?CodePostal $code_postal = null;
 
     #[ORM\Column(type: 'boolean')]

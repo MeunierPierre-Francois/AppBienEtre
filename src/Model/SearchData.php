@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Model;
+
+class SearchData
+{
+    /** @var int */
+    public $page = 1;
+
+    /** @var string */
+    public string $prestataire = '';
+
+
+    /** @var array */
+    public array $categorie_service = [];
+}

@@ -41,6 +41,11 @@ class CategorieDeServices
         $this->images = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->nom;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

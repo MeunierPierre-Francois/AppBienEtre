@@ -4,6 +4,9 @@
 {% endblock %}
 
 {% block body %}
+	{% include "components/_search_data.html.twig" with{
+	form:form
+} %}
 	<main class="categories">
 		<h1 class='text-center'>Catégories de services</h1>
 		<div class="container">

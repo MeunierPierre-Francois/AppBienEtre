@@ -2,21 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Prestataire;
 use App\Entity\Images;
 use App\Entity\Proposer;
-use App\Entity\CategorieDeServices;
-use App\Entity\Utilisateur;
 use App\Form\SearchType;
-use App\Form\PrestataireFormType;
+use App\Model\SearchData;
+use App\Entity\Prestataire;
+use App\Entity\Utilisateur;
 use App\Service\PictureService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Form\PrestataireFormType;
+use App\Entity\CategorieDeServices;
 use Symfony\Component\DomCrawler\Image;
-use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Paginator\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repository\ProposerRepository;
+use App\Form\SearchFormType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 
@@ -26,14 +28,9 @@ class PrestataireController extends AbstractController
     public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager, PictureService $pictureService): Response
     {
 
-
-
-
         $prestataire = new Prestataire();
         $form = $this->createForm(PrestataireFormType::class, $prestataire);
-
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             //On récupère les images
@@ -81,15 +78,31 @@ class PrestataireController extends AbstractController
     }
 
     #[Route('/prestataires', name: 'app_prestataire_liste')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, Request $request, ProposerRepository $proposerRepository): Response
     {
 
         $repository = $entityManager->getRepository(Prestataire::class);
         $prestataires = $repository->findBy([]);
 
+        $searchData = new SearchData();
+        $form = $this->createForm(SearchFormType::class, $searchData);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchData->page = $request->query->getInt('page', 1);
+            $proposers = $proposerRepository->findBySearch($searchData);
+
+            return $this->render('prestataire/recherche.html.twig', [
+                'form' => $form->createView(),
+                'proposers' => $proposers
+            ]);
+        }
+
         return $this->render('prestataire/liste.html.twig', [
-            'prestataires' => $prestataires
-        ]);
+            'prestataires' => $prestataires,
+            'form' => $form->createView(),
+
+
+        ]);;
     }
 
     #[Route('/prestataires/profil/{id}', name: 'app_prestataire_detail')]

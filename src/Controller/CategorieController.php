@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Proposer;
+use App\Model\SearchData;
+use App\Entity\Prestataire;
+use App\Entity\CategorieDeServices;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\CategorieDeServices;
-use App\Entity\Prestataire;
-use App\Entity\Proposer;
-
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repository\ProposerRepository;
+use App\Form\SearchFormType;
 
 
 class CategorieController extends AbstractController
@@ -18,14 +21,30 @@ class CategorieController extends AbstractController
 
 
   #[Route('/categories', name: 'app_categorie_liste')]
-  public function index(EntityManagerInterface $entityManager): Response
+  public function index(EntityManagerInterface $entityManager, Request $request, ProposerRepository $proposerRepository): Response
   {
 
     $repository = $entityManager->getRepository(CategorieDeServices::class);
     $categories = $repository->findBy(['valide' => 1]);
 
+    $searchData = new SearchData();
+    $form = $this->createForm(SearchFormType::class, $searchData);
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+      $searchData->page = $request->query->getInt('page', 1);
+      $proposers = $proposerRepository->findBySearch($searchData);
+
+      return $this->render('prestataire/recherche.html.twig', [
+        'form' => $form->createView(),
+        'proposers' => $proposers
+      ]);
+    }
+
     return $this->render('categorie/liste.html.twig', [
-      'categories' => $categories
+
+      'categories' => $categories,
+      'form' => $form->createView(),
+
     ]);
   }
 

@@ -40,7 +40,9 @@
 		</a>
 	</div>
 
-
+	{% include "components/_search_data.html.twig" with{
+	form:form
+} %}
 	<div class="container">
 		<h2 class="text-center py-5">Les derniers prestataires inscrit !</h2>
 		<div class="row">

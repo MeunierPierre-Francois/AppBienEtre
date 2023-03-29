@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Proposer;
+use App\Model\SearchData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -68,6 +69,40 @@ class ProposerRepository extends ServiceEntityRepository
         )->setParameter('categorieId', $categorieId);
 
         return $query->getResult();
+    }
+
+    /**  
+     *
+     *requete pour la  recherche
+     *
+     * @param SearchData $searchData
+     * @return PaginationInterface
+     * 
+     */
+    public function findBySearch(SearchData $searchData): array
+    {
+        $data = $this->createQueryBuilder('pr');
+        if (!empty($searchData->prestataire)) {
+            $data = $data
+                ->join('pr.prestataire', 'p')
+                ->andWhere('p.nom LIKE :prestataire')
+                ->setParameter('prestataire', "%{$searchData->prestataire}%");
+        }
+
+        if (!empty($searchData->categorie_service)) {
+            $data = $data
+                ->join('pr.categorie_service', 'c')
+                ->andWhere('c.nom IN (:categorie_service)')
+                ->setParameter('categorie_service', $searchData->categorie_service);
+        }
+
+
+        $data = $data
+            ->getQuery()
+            ->getResult();
+
+        $proposers = $data;
+        return $proposers;
     }
 
 

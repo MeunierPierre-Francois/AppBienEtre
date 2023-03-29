@@ -5,24 +5,21 @@
 
 {% block body %}
 	<main class="categories">
-		{% include "components/_search_data.html.twig" with{
-	form:form
-} %}
 		<h1 class='text-center'>Nos prestataires</h1>
 
 
 		<div class="container">
 
 			<div class="row">
-				{% for prestataire in prestataires %}
+				{% for pr in proposers %}
 					<div class="col-md-3 mb-4">
 						<div class="card" style="width: 18rem;">
-							{% for image in prestataire.images %}
+							{% for image in pr.prestataire.images %}
 								<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="card-img-top" alt=""/>
 							{% endfor %}
 							<div class="card-body">
-								<h5 class="card-title">{{ prestataire.nom }}</h5>
-								<a href={{path('app_prestataire_detail',{'id': prestataire.id} )}} class="btn btn-primary">Voir plus</a>
+								<h5 class="card-title">{{ pr.prestataire.nom }}</h5>
+								<a href={{path('app_prestataire_detail',{'id': pr.prestataire.id} )}} class="btn btn-primary">Voir plus</a>
 							</div>
 						</div>
 					</div>

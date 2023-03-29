@@ -1,58 +1,61 @@
 {% extends "base.html.twig" %}
 
+
 {% block body %}
 
 	<div class="container">
+		<h1>{{ prestataire.nom }}</h1>
 		<div class="row">
+
 			<div class="col-md-4">
 				<img src="[url de la photo du prestataire]" class="img-fluid rounded-circle" alt="Photo du prestataire">
 				<h1 class="mt-3">{{ prestataire.nom }}</h1>
-				{% if prestataire.utilisateur.localite is not null %}
 
-					<h1 class="mt-3">{{ prestataire.utilisateur.localite.localite}}</h1>
-				{% endif %}
 
-				<p>[Description du prestataire]</p>
-				<ul class="list-unstyled">
-					<li>
-						<i class="fa fa-map-marker mr-2"></i>[Adresse]</li>
-					<li>
-						<i class="fa fa-envelope mr-2"></i>[Email]</li>
-					<li>
-						<i class="fa fa-phone mr-2"></i>[Téléphone]</li>
-				</ul>
+				<p>Infos</p>
+				<p>
+					<strong>Téléphone :
+					</strong>
+				</p>
+				<p>
+					<strong>Email :
+					</strong>
+				</p>
+				<p>
+					<strong>Adresse :
+					</strong>
+				</p>
+				<p>
+					<strong>Commune :
+					</strong>
+					{{ prestataire.utilisateur.commune.commune }}</p>
+				<p>
+					<strong>Code postal :
+					</strong>
+				</p>
+				<p>
+					<strong>Localité :
+					</strong>
+					{{ prestataire.utilisateur.localite.localite }}</p>
+
 			</div>
 			<div class="col-md-8">
 				<div class="row">
-					<div class="col-md-4">
-						<div class="card mb-4">
-							<img class="card-img-top" src="[url de l'image de catégorie 1]" alt="Card image cap">
-							<div class="card-body">
-								{% for category in categories %}
+					{% for category in categories %}
+						<div class="col-md-3 mb-4">
+							<div class="card" style="width: 18rem;">
+								<img src="{{ asset('images/Massage_thérapeutique1.jpg') }}" class="card-img-top" alt=""/>
+								<div class="card-body">
 									<h5 class="card-title">{{ category.nom }}</h5>
-								{% endfor %}
-
+									<p>{{category.description}}</p>
+									<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-primary">Voir plus</a>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card mb-4">
-							<img class="card-img-top" src="[url de l'image de catégorie 2]" alt="Card image cap">
-							<div class="card-body">
-								<h5 class="card-title">[Catégorie 2]</h5>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="card mb-4">
-							<img class="card-img-top" src="[url de l'image de catégorie 3]" alt="Card image cap">
-							<div class="card-body">
-								<h5 class="card-title">[Catégorie 3]</h5>
-							</div>
-						</div>
-					</div>
+					{% endfor %}
 				</div>
 			</div>
+
 		</div>
 	</div>
 

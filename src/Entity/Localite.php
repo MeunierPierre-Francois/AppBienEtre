@@ -24,6 +24,7 @@ class Localite
     #[ORM\OneToMany(mappedBy: 'localite', targetEntity: Utilisateur::class)]
     private Collection $utilisateurs;
 
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
