@@ -71,14 +71,14 @@ class ProposerRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    /**  
+    /*
      *
      *requete pour la  recherche
      *
      * @param SearchData $searchData
      * @return PaginationInterface
      * 
-     */
+     
     public function findBySearch(SearchData $searchData): array
     {
         $data = $this->createQueryBuilder('pr');
@@ -104,7 +104,7 @@ class ProposerRepository extends ServiceEntityRepository
         $proposers = $data;
         return $proposers;
     }
-
+*/
 
 
 

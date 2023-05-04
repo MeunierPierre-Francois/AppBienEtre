@@ -52,15 +52,15 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Internaute $internaute = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Commune $commune = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Localite $localite = null;
 
     #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?CodePostal $code_postal = null;
 
     #[ORM\Column(type: 'boolean')]

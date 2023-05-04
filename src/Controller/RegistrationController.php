@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\CategorieDeServices;
+use App\Entity\Commune;
+use App\Entity\CodePostal;
+use App\Entity\Localite;
 use App\Entity\Utilisateur;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
@@ -30,44 +33,88 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/inscription', name: 'app_inscription')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UtilisateurAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher,  EntityManagerInterface $entityManager): Response
     {
 
         // On récupère les données pour alimenter les champs de choix
         $json = file_get_contents(__DIR__ . '/../../public/json/villes.json');
         $data = json_decode($json, true);
-        // Créer un tableau vide pour stocker les villes, les codes postaux et les régions uniques
-        $villes = [];
-        $codePostaux = [];
-        $regions = [];
 
-        // Parcourir le tableau des données et ajouter les villes, les codes postaux et les régions uniques au tableau correspondant
+        $communes = [];
+        $localites = [];
+        $codesPostaux = [];
+
         foreach ($data as $item) {
-            if (!in_array($item['ville'], $villes)) {
-                $villes[$item['ville']] = $item['ville'];
+            // Récupérer les données de l'item
+            $communeData = $item['region'];
+            $localiteData = $item['ville'];
+            $codePostalData = $item['codePostal'];
+
+            //Vérifier si la commune existe déjà
+            $commune = $entityManager->getRepository(Commune::class)->findOneBy(['commune' => $communeData]);
+            if (!$commune) {
+                // Créer l'objet Commune
+                $commune = new Commune();
+                $commune->setCommune($communeData);
+
+                // Persister la commune
+                $entityManager->persist($commune);
             }
-            if (!in_array($item['codePostal'], $codePostaux)) {
-                $codePostaux[$item['codePostal']] = $item['codePostal'];
+
+            // Enregistrer la commune dans le tableau pour éviter les doublons
+            $communes[$communeData] = $commune;
+
+            // Vérifier si la localité existe déjà
+            $localite = $entityManager->getRepository(Localite::class)->findOneBy(['localite' => $localiteData]);
+            if (!$localite) {
+                // Créer l'objet Localite
+                $localite = new Localite();
+                $localite->setLocalite($localiteData);
+
+                // Persister la localité
+                $entityManager->persist($localite);
             }
-            if (!in_array($item['region'], $regions)) {
-                $regions[$item['region']] = $item['region'];
+
+            // Enregistrer la localité dans le tableau pour éviter les doublons
+            $localites[$localiteData] = $localite;
+
+            // Vérifier si le code postal existe déjà
+            $codePostal = $entityManager->getRepository(CodePostal::class)->findOneBy(['code_postal' => $codePostalData]);
+            if (!$codePostal) {
+                // Créer l'objet CodePostal
+                $codePostal = new CodePostal();
+                $codePostal->setCodePostal($codePostalData);
+
+                // Persister le code postal
+                $entityManager->persist($codePostal);
             }
+
+            // Enregistrer le code postal dans le tableau pour éviter les doublons
+            $codesPostaux[$codePostalData] = $codePostal;
         }
-        asort($codePostaux, SORT_NUMERIC);
-        asort($villes);
-        asort($regions);
+
+        // Enregistrer les changements dans la base de données
+        $entityManager->flush();
 
         $user = new Utilisateur();
         $user->setInscription(new \DateTimeImmutable());
         $user->setRoles(['ROLE_USER']);
-        $form = $this->createForm(RegistrationFormType::class, $user, [
-            'villes' => $villes,
-            'codePostaux' => $codePostaux,
-            'regions' => $regions,
-        ]);
+        $form = $this->createForm(RegistrationFormType::class, $user);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $datas = $form->getData();
+            // Récupérer les entités correspondantes à la région, la ville et le code postal choisis par l'utilisateur
+            $commune = $entityManager->getRepository(Commune::class)->find($datas->getCommune());
+            $localite = $entityManager->getRepository(Localite::class)->find($datas->getLocalite());
+            $codePostal = $entityManager->getRepository(CodePostal::class)->find($datas->getCodePostal());
+
+            // Associer les entités Region, Ville et CodePostal à l'entité Utilisateur
+            $user->setCommune($commune);
+            $user->setLocalite($localite);
+            $user->setCodePostal($codePostal);
 
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
@@ -78,6 +125,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+
             $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,
@@ -87,13 +135,8 @@ class RegistrationController extends AbstractController
                     ->subject("Confirmation d'email")
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-
-
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );
+            $this->addFlash('success', 'Un email de confirmation vous a été envoyé. Veuillez vérifier votre adresse email pour activer votre compte.');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -103,7 +146,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
+    public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserAuthenticatorInterface $userAuthenticator, UtilisateurAuthenticator $authenticator): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -115,10 +158,13 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_inscription');
         }
+        $userAuthenticator->authenticateUser(
+            $this->getUser(),
+            $authenticator,
+            $request
+        );
 
-
-        $this->addFlash('Bien joué !', 'Votre Email a bien été vérifié');
-
+        $this->addFlash('success', 'Votre adresse email a été vérifiée. Votre compte est maintenant activé.');
         return $this->redirectToRoute('app_home');
     }
 }

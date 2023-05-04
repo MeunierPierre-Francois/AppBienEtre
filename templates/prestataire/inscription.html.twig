@@ -2,18 +2,22 @@
 
 {% block body %}
 	<div class="container mt-4">
-		<h1>Ajouter un prestataire</h1>
+		<h1>S'inscrire comme pestataie</h1>
 		{{ form_start(form) }}
 		<div class="form-group">
+			{{form_label(form.nom)}}
 			{{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
 		</div>
 		<div class="form-group">
+			{{form_label(form.site_internet)}}
 			{{ form_widget(form.site_internet, {'attr': {'class': 'form-control'}}) }}
 		</div>
 		<div class="form-group">
+			{{form_label(form.num_tel)}}
 			{{ form_widget(form.num_tel, {'attr': {'class': 'form-control'}}) }}
 		</div>
 		<div class="form-group">
+			{{form_label(form.num_tva)}}
 			{{ form_widget(form.num_tva, {'attr': {'class': 'form-control'}}) }}
 		</div>
 		<button type="submit" class="btn btn-primary mt-3">Devenir prestataire</button>

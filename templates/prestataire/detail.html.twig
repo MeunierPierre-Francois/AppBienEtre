@@ -8,55 +8,126 @@
 		<div class="row">
 
 			<div class="col-md-4">
-				<img src="[url de la photo du prestataire]" class="img-fluid rounded-circle" alt="Photo du prestataire">
-				<h1 class="mt-3">{{ prestataire.nom }}</h1>
+				{% for image in prestataire.images %}
+					<img src="{{ asset('uploads/prestataires/' ~ image.nom) }}" class="img-fluid rounded-circle" style="width: 200px; height: 200px" alt="Photo du prestataire">
+				{% endfor %}
 
 
-				<p>Infos</p>
-				<p>
-					<strong>Téléphone :
-					</strong>
-				</p>
-				<p>
-					<strong>Email :
-					</strong>
-				</p>
+				<h2>Infos</h2>
+				{% if prestataire.numtel is not null %}
+					<p>
+						<strong>Téléphone :</strong>
+						{{ prestataire.numtel }}</p>
+				{% else %}
+					<p>
+						<strong>Téléphone :</strong>
+						/
+					</p>
+				{% endif %}
+
+				{% if prestataire.utilisateur.email is not null %}
+					<p>
+						<strong>Email :</strong>
+						{{ prestataire.utilisateur.email }}</p>
+				{% else %}
+					<p>
+						<strong>Email :</strong>
+						/
+					</p>
+				{% endif %}
+
 				<p>
 					<strong>Adresse :
 					</strong>
+					{{ prestataire.utilisateur.adresserue }}
+					{{ prestataire.utilisateur.adressenum }}
 				</p>
-				<p>
-					<strong>Commune :
-					</strong>
-					{{ prestataire.utilisateur.commune.commune }}</p>
-				<p>
-					<strong>Code postal :
-					</strong>
-				</p>
-				<p>
-					<strong>Localité :
-					</strong>
-					{{ prestataire.utilisateur.localite.localite }}</p>
+
+
+				{% if prestataire.utilisateur.commune is not null %}
+					<p>
+						<strong>Commune :</strong>
+						{{ prestataire.utilisateur.commune.commune }}</p>
+				{% else %}
+					<p>
+						<strong>Commune :</strong>
+						/
+					</p>
+				{% endif %}
+
+
+				{% if prestataire.utilisateur.localite is not null %}
+					<p>
+						<strong>Localité :</strong>
+						{{ prestataire.utilisateur.localite.localite }}</p>
+				{% else %}
+					<p>
+						<strong>Localité :</strong>
+						/
+					</p>
+				{% endif %}
+
+				{% if prestataire.utilisateur.codepostal is not null %}
+					<p>
+						<strong>Code Postal :</strong>
+						{{ prestataire.utilisateur.codepostal.codepostal }}</p>
+				{% else %}
+					<p>
+						<strong>Code Postal :</strong>
+						/
+					</p>
+				{% endif %}
+
+
+				{% if prestataire.numtva is not null %}
+					<p>
+						<strong>Numéro de TVA :</strong>
+						{{ prestataire.numtva }}</p>
+				{% else %}
+					<p>
+						<strong>Numéro de TVA :</strong>
+						/
+					</p>
+				{% endif %}
+
+				{% if prestataire.siteinternet is not null %}
+					<p>
+						<strong>Site internet :</strong>
+						<a href="https://www.google.be/" target="blank">{{ prestataire.siteinternet }}</a>
+					</p>
+				{% else %}
+					<p>
+						<strong>Site internet :</strong>
+						/
+					</p>
+				{% endif %}
+
 
 			</div>
 			<div class="col-md-8">
 				<div class="row">
-					{% for category in categories %}
-						<div class="col-md-3 mb-4">
-							<div class="card" style="width: 18rem;">
-								<img src="{{ asset('images/Massage_thérapeutique1.jpg') }}" class="card-img-top" alt=""/>
-								<div class="card-body">
-									<h5 class="card-title">{{ category.nom }}</h5>
-									<p>{{category.description}}</p>
-									<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-primary">Voir plus</a>
+					<h2>Services proposé</h2>
+					{% if categories|length > 0 %}
+						{% for category in categories %}
+							<div class="col-md-3 mb-4">
+								<div class="card" style="width: 18rem;">
+									<img src="{{ asset('images/Massage_thérapeutique1.jpg') }}" class="card-img-top" alt=""/>
+									<div class="card-body">
+										<h5 class="card-title">{{ category.nom }}</h5>
+										<p>{{category.description}}</p>
+										<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-primary">Voir plus</a>
+									</div>
 								</div>
 							</div>
+						{% endfor %}
+					{% else %}
+						<div class="alert alert-warning" role="alert">
+							Ce prestataire ne propose pas encore de service pour le moment.
 						</div>
-					{% endfor %}
+					{% endif %}
 				</div>
 			</div>
 
 		</div>
 	</div>
-
 {% endblock %}

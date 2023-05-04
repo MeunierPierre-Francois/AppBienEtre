@@ -25,7 +25,7 @@ class HomeController extends AbstractController
             ->select('p')
             ->from(Prestataire::class, 'p')
             ->leftJoin('p.utilisateur', 'u')
-            ->orderBy('u.inscription', 'ASC')
+            ->orderBy('u.inscription', 'DESC')
             ->setMaxResults(4)
             ->getQuery()
             ->getResult();
@@ -36,23 +36,13 @@ class HomeController extends AbstractController
             ->findBy(['en_avant' => true]);
 
 
-        $searchData = new SearchData();
-        $form = $this->createForm(SearchFormType::class, $searchData);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $searchData->page = $request->query->getInt('page', 1);
-            $proposers = $proposerRepository->findBySearch($searchData);
-            dd($searchData);
-            return $this->render('prestataire/recherche.html.twig', [
-                'form' => $form->createView(),
-                'proposers' => $proposers
-            ]);
-        }
+
+
 
         return $this->render('home/index.html.twig', [
             'prestataires' => $prestataires,
             'categories' => $categories,
-            'form' => $form->createView(),
+
 
         ]);
     }

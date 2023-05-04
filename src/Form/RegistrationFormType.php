@@ -2,7 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\CodePostal;
+use App\Entity\Commune;
+use App\Entity\Localite;
 use App\Entity\Utilisateur;
+use Locale;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -33,25 +37,26 @@ class RegistrationFormType extends AbstractType
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Your password should be at least 6 characters',
                         'max' => 4096,
                     ]),
                 ],
             ])
-            ->add('commune', ChoiceType::class, [
-                'choices' => $options['regions'],
+            ->add('commune', EntityType::class, [
+                'class' => Commune::class,
                 'placeholder' => '--Sélectionnez votre région--',
-                'mapped' => 'false',
+
+
             ])
-            ->add('code_postal', ChoiceType::class, [
-                'choices' => $options['codePostaux'],
+            ->add('codePostal', EntityType::class, [
+                'class' => CodePostal::class,
                 'placeholder' => '--Sélectionnez votre code postal--',
-                'mapped' => 'false',
+
             ])
-            ->add('localite', ChoiceType::class, [
-                'choices' => $options['villes'],
+            ->add('localite', EntityType::class, [
+                'class' => Localite::class,
                 'placeholder' => '--Sélectionnez votre ville--',
-                'mapped' => 'false',
+
             ])
 
             ->add('adresse_num')
@@ -72,9 +77,7 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
-            'codePostaux' => [],
-            'regions' => [],
-            'villes' => [],
+
         ]);
     }
 }

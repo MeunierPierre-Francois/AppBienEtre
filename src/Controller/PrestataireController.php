@@ -84,23 +84,9 @@ class PrestataireController extends AbstractController
         $repository = $entityManager->getRepository(Prestataire::class);
         $prestataires = $repository->findBy([]);
 
-        $searchData = new SearchData();
-        $form = $this->createForm(SearchFormType::class, $searchData);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $searchData->page = $request->query->getInt('page', 1);
-            $proposers = $proposerRepository->findBySearch($searchData);
-
-            return $this->render('prestataire/recherche.html.twig', [
-                'form' => $form->createView(),
-                'proposers' => $proposers
-            ]);
-        }
 
         return $this->render('prestataire/liste.html.twig', [
             'prestataires' => $prestataires,
-            'form' => $form->createView(),
-
 
         ]);;
     }
