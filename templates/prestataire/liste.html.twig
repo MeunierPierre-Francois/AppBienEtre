@@ -4,6 +4,9 @@
 {% endblock %}
 
 {% block body %}
+	{% include "components/_search_presta.html.twig" with{
+		form : form
+	} %}
 	<main class="categories">
 
 		<h1 class='text-center'>Nos prestataires</h1>
@@ -26,6 +29,7 @@
 					</div>
 				{% endfor %}
 			</div>
+
 		</div>
 
 	</main>

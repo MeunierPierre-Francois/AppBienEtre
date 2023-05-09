@@ -8,53 +8,55 @@ use App\Entity\Commune;
 use App\Entity\CategorieDeServices;
 use App\Entity\Localite;
 use App\Entity\CodePostal;
-use App\Model\SearchData;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchFormType extends AbstractType
+class PrestataireSearchType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('prestataire', TextType::class, [
+            ->add('nom', SearchType::class, [
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Rechercher un prestataire...'
                 ],
-                'empty_data' => ''
+
             ])
 
-            ->add('categorie_service', EntityType::class, [
+            ->add('categories', EntityType::class, [
                 'class' => CategorieDeServices::class,
                 'placeholder' => 'Catégories',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
 
-            ]);
-        /* ->add('localite', EntityType::class, [
+            ])
+
+            ->add('localite', EntityType::class, [
                 'class' => Localite::class,
-                'placeholder' => 'Localité',
+                'placeholder' => '--Sélectionnez une ville--',
                 'required' => false
             ])
-            ->add('code_postal', EntityType::class, [
+
+            ->add('codePostal', EntityType::class, [
                 'class' => CodePostal::class,
-                'placeholder' => 'Code Postal',
+                'placeholder' => '--Sélectionnez un code postal--',
                 'required' => false
             ])
+
             ->add('commune', EntityType::class, [
                 'class' => Commune::class,
-                'placeholder' => 'Commune',
+                'placeholder' => '--Sélectionnez une commune--',
                 'required' => false
-            ]);*/
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => SearchData::class,
+            'data_class' => null,
             'method' => 'GET'
         ]);
     }

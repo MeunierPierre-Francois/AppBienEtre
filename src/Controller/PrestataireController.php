@@ -2,28 +2,29 @@
 
 namespace App\Controller;
 
+use App\Repository\PrestataireRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use App\Entity\Images;
 use App\Entity\Proposer;
-use App\Form\SearchType;
-use App\Model\SearchData;
 use App\Entity\Prestataire;
 use App\Entity\Utilisateur;
 use App\Service\PictureService;
 use App\Form\PrestataireFormType;
-use App\Entity\CategorieDeServices;
-use Symfony\Component\DomCrawler\Image;
+use App\Form\PrestataireSearchType;
+use App\Service\PrestataireService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Repository\ProposerRepository;
-use App\Form\SearchFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 
 class PrestataireController extends AbstractController
 {
+
+
+
     #[Route('/devenir-prestataire', name: 'app_prestataire_form')]
     public function devenirPrestataire(Request $request, EntityManagerInterface $entityManager, PictureService $pictureService): Response
     {
@@ -78,15 +79,45 @@ class PrestataireController extends AbstractController
     }
 
     #[Route('/prestataires', name: 'app_prestataire_liste')]
-    public function index(EntityManagerInterface $entityManager, Request $request, ProposerRepository $proposerRepository): Response
+    public function index(EntityManagerInterface $entityManager, Request $request, PrestataireRepository $prestataireRepository, PaginatorInterface $paginator): Response
     {
+
+        $form = $this->createForm(PrestataireSearchType::class);
+        $form->handleRequest($request);
+
+        // Si le formulaire est soumis, exécuter la recherche et afficher les résultats
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $nom = $data['nom'];
+            $categories = $data['categories']->toArray();
+            $localite = $data['localite'] ? $data['localite']->getId() : null;
+            $codePostal = $data['codePostal'] ? $data['codePostal']->getId() : null;
+            $commune = $data['commune'] ? $data['commune']->getId() : null;
+
+            $prestataires = $prestataireRepository->findByFilters($nom, $categories, $localite, $codePostal, $commune);
+            $pagination = $paginator->paginate(
+                $prestataires,
+                $request->query->getInt('page', 1), // Numéro de page à afficher
+                10
+            ); // Nombre de résultats par page
+
+            // Afficher les résultats de la recherche
+            return $this->render('prestataire/recherche.html.twig', [
+                'prestataires' => $prestataires,
+                'form' => $form->createView(),
+                'pagination' => $pagination
+            ]);
+        }
 
         $repository = $entityManager->getRepository(Prestataire::class);
         $prestataires = $repository->findBy([]);
 
-
         return $this->render('prestataire/liste.html.twig', [
             'prestataires' => $prestataires,
+            'form' => $form->createView()
+
+
 
         ]);;
     }
@@ -116,6 +147,44 @@ class PrestataireController extends AbstractController
             'prestataire' => $prestataire,
             'categories' => $categories,
 
+        ]);
+    }
+
+    #[Route('/prestataires/recherche', name: 'app_prestataire_recherche')]
+    public function search(Request $request, PrestataireRepository $prestataireRepository, PaginatorInterface $paginator): Response
+    {
+        // Créer un formulaire de recherche de prestataires
+        $form = $this->createForm(PrestataireSearchType::class);
+        $form->handleRequest($request);
+
+        // Si le formulaire est soumis, exécuter la recherche et afficher les résultats
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $nom = $data['nom'];
+            $categories = $data['categories']->toArray();
+            $localite = $data['localite'] ? $data['localite']->getId() : null;
+            $codePostal = $data['codePostal'] ? $data['codePostal']->getId() : null;
+            $commune = $data['commune'] ? $data['commune']->getId() : null;
+
+            $prestataires = $prestataireRepository->findByFilters($nom, $categories, $localite, $codePostal, $commune);
+            $pagination = $paginator->paginate(
+                $prestataires,
+                $request->query->getInt('page', 1), // Numéro de page à afficher
+                10
+            ); // Nombre de résultats par page
+
+            // Afficher les résultats de la recherche
+            return $this->render('prestataire/liste.html.twig', [
+                'prestataires' => $prestataires,
+                'form' => $form->createView(),
+                'pagination' => $pagination
+            ]);
+        }
+
+        // Afficher le formulaire de recherche
+        return $this->render('components/_search_presta.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 }

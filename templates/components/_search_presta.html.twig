@@ -1,0 +1,14 @@
+{% block body %}
+	<h1>Trouver le prestataire qui vous convient !</h1>
+
+	{{ form_start(form) }}
+	{{ form_row(form.nom) }}
+	{{ form_row(form.categories) }}
+	{{ form_row(form.localite) }}
+	{{ form_row(form.codePostal) }}
+	{{ form_row(form.commune) }}
+	{{ form_rest(form) }}
+	<button type="submit">Rechercher</button>
+	{{ form_end(form) }}
+
+{% endblock %}

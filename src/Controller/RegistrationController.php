@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\CategorieDeServices;
+
 use App\Entity\Commune;
 use App\Entity\CodePostal;
 use App\Entity\Localite;

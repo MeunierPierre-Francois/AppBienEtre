@@ -48,6 +48,60 @@ class PrestataireRepository extends ServiceEntityRepository
     }
 
 
+    public function findByFilters($nom, $categories, $localite, $codePostal, $commune)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->leftJoin('p.proposers', 'proposer')
+            ->leftJoin('proposer.categorie_service', 'categorie')
+            ->leftJoin('p.utilisateur', 'utilisateur')
+            ->leftJoin('utilisateur.localite', 'localite')
+            ->leftJoin('utilisateur.code_postal', 'code_postal')
+            ->leftJoin('utilisateur.commune', 'commune');
+
+
+        if ($nom) {
+            $qb->andWhere('p.nom LIKE :nom')
+                ->setParameter('nom', '%' . $nom . '%');
+        }
+
+        if ($categories) {
+            $qb->andWhere('categorie.id IN (:categories)')
+                ->setParameter('categories', $categories);
+        }
+
+        if ($localite) {
+            $qb->andWhere('localite.id = :localite')
+                ->setParameter('localite', $localite);
+        }
+
+        if ($codePostal) {
+            $qb->andWhere('code_postal.id = :codePostal')
+                ->setParameter('codePostal', $codePostal);
+        }
+
+        if ($commune) {
+            $qb->andWhere('commune.id = :commune')
+                ->setParameter('commune', $commune);
+        }
+
+        $prestataires = $qb->getQuery()->getResult();
+        if (empty($prestataires)) {
+            // Si aucun prestataire ne correspond aux critères, on réexécute la requête sans les critères de recherche
+            $qb = $this->createQueryBuilder('p')
+                ->leftJoin('p.proposers', 'proposer')
+                ->leftJoin('proposer.categorie_service', 'categorie')
+                ->leftJoin('p.utilisateur', 'utilisateur')
+                ->leftJoin('utilisateur.localite', 'localite')
+                ->leftJoin('utilisateur.code_postal', 'code_postal')
+                ->leftJoin('utilisateur.commune', 'commune');
+            $prestataires = $qb->getQuery()->getResult();
+        }
+
+        return $prestataires;
+    }
+
+
+
 
     //    /**
     //     * @return Prestataire[] Returns an array of Prestataire objects
