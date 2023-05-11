@@ -8,3 +8,11 @@
     height: 500px;
     object-fit: cover;
   }
+
+.bg-categorie{
+
+  height: 500px;
+  object-fit: cover;
+  width: 100%;
+}
+

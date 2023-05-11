@@ -1,9 +1,14 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Catégories de services
 {% endblock %}
 
 {% block body %}
+
+	<header>
+		<img src="{{ asset('images/background_categorie.jpg') }}" alt="Description de l'image" style=" height: 500px; object-fit: cover; width: 100%;">
+	</header>
 	{% include "components/_search_presta.html.twig"  %}
 	<main class="categories">
 		<h1 class='text-center'>Catégories de services</h1>
@@ -11,12 +16,12 @@
 			<div class="row">
 				{% for category in categories %}
 					<div class="col-md-3 mb-4">
-						<div class="card" style="width: 18rem;">
+						<div class="card h-100" style="width: 18rem;">
 							<img src="{{ asset('images/Massage_thérapeutique1.jpg') }}" class="card-img-top" alt=""/>
-							<div class="card-body">
+							<div class="card-body text-center">
 								<h5 class="card-title">{{ category.nom }}</h5>
 								<p>{{category.description}}</p>
-								<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-primary">Voir plus</a>
+								<a href={{path('app_categorie_detail',{'id': category.id} )}} class="rounded-pill btn btn-success btn-block btn-lg gradient-custom-4 text-body">Voir plus</a>
 							</div>
 						</div>
 					</div>

@@ -30,7 +30,7 @@ class CategorieController extends AbstractController
       $data = $form->getData();
 
       $nom = $data['nom'];
-      $categories = $data['categories']->toArray();
+      $categories = $data['categories'] ? $data['categories']->getId() : null;
       $localite = $data['localite'] ? $data['localite']->getId() : null;
       $codePostal = $data['codePostal'] ? $data['codePostal']->getId() : null;
       $commune = $data['commune'] ? $data['commune']->getId() : null;
@@ -39,7 +39,7 @@ class CategorieController extends AbstractController
       $pagination = $paginator->paginate(
         $prestataires,
         $request->query->getInt('page', 1), // Numéro de page à afficher
-        10
+        12
       ); // Nombre de résultats par page
 
       // Afficher les résultats de la recherche

@@ -29,26 +29,25 @@ class PrestataireSearchType extends AbstractType
                 'class' => CategorieDeServices::class,
                 'placeholder' => 'Catégories',
                 'required' => false,
-                'expanded' => true,
-                'multiple' => true,
+
 
             ])
 
             ->add('localite', EntityType::class, [
                 'class' => Localite::class,
-                'placeholder' => '--Sélectionnez une ville--',
+                'placeholder' => '--Ville--',
                 'required' => false
             ])
 
             ->add('codePostal', EntityType::class, [
                 'class' => CodePostal::class,
-                'placeholder' => '--Sélectionnez un code postal--',
+                'placeholder' => '--Code Postal--',
                 'required' => false
             ])
 
             ->add('commune', EntityType::class, [
                 'class' => Commune::class,
-                'placeholder' => '--Sélectionnez une commune--',
+                'placeholder' => '--Commune--',
                 'required' => false
             ]);
     }

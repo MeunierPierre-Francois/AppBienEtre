@@ -50,47 +50,59 @@ class RegistrationController extends AbstractController
             $localiteData = $item['ville'];
             $codePostalData = $item['codePostal'];
 
-            //Vérifier si la commune existe déjà
-            $commune = $entityManager->getRepository(Commune::class)->findOneBy(['commune' => $communeData]);
-            if (!$commune) {
-                // Créer l'objet Commune
-                $commune = new Commune();
-                $commune->setCommune($communeData);
+            if (!isset($communes[$communeData])) {
+                //Vérifier si la commune existe déjà
+                $commune = $entityManager->getRepository(Commune::class)->findOneBy(['commune' => $communeData]);
+                if (!$commune) {
+                    // Créer l'objet Commune
+                    $commune = new Commune();
+                    $commune->setCommune($communeData);
 
-                // Persister la commune
-                $entityManager->persist($commune);
+                    // Persister la commune
+                    $entityManager->persist($commune);
+                }
+
+                // Enregistrer la commune dans le tableau pour éviter les doublons
+                $communes[$communeData] = $commune;
+            } else {
+                $commune = $communes[$communeData];
             }
 
-            // Enregistrer la commune dans le tableau pour éviter les doublons
-            $communes[$communeData] = $commune;
+            if (!isset($localites[$localiteData])) {
+                // Vérifier si la localité existe déjà
+                $localite = $entityManager->getRepository(Localite::class)->findOneBy(['localite' => $localiteData]);
+                if (!$localite) {
+                    // Créer l'objet Localite
+                    $localite = new Localite();
+                    $localite->setLocalite($localiteData);
 
-            // Vérifier si la localité existe déjà
-            $localite = $entityManager->getRepository(Localite::class)->findOneBy(['localite' => $localiteData]);
-            if (!$localite) {
-                // Créer l'objet Localite
-                $localite = new Localite();
-                $localite->setLocalite($localiteData);
+                    // Persister la localité
+                    $entityManager->persist($localite);
+                }
 
-                // Persister la localité
-                $entityManager->persist($localite);
+                // Enregistrer la localité dans le tableau pour éviter les doublons
+                $localites[$localiteData] = $localite;
+            } else {
+                $localite = $localites[$localiteData];
             }
 
-            // Enregistrer la localité dans le tableau pour éviter les doublons
-            $localites[$localiteData] = $localite;
+            if (!isset($codesPostaux[$codePostalData])) {
+                // Vérifier si le code postal existe déjà
+                $codePostal = $entityManager->getRepository(CodePostal::class)->findOneBy(['code_postal' => $codePostalData]);
+                if (!$codePostal) {
+                    // Créer l'objet CodePostal
+                    $codePostal = new CodePostal();
+                    $codePostal->setCodePostal($codePostalData);
 
-            // Vérifier si le code postal existe déjà
-            $codePostal = $entityManager->getRepository(CodePostal::class)->findOneBy(['code_postal' => $codePostalData]);
-            if (!$codePostal) {
-                // Créer l'objet CodePostal
-                $codePostal = new CodePostal();
-                $codePostal->setCodePostal($codePostalData);
+                    // Persister le code postal
+                    $entityManager->persist($codePostal);
+                }
 
-                // Persister le code postal
-                $entityManager->persist($codePostal);
+                // Enregistrer le code postal dans le tableau pour éviter les doublons
+                $codesPostaux[$codePostalData] = $codePostal;
+            } else {
+                $codePostal = $codesPostaux[$codePostalData];
             }
-
-            // Enregistrer le code postal dans le tableau pour éviter les doublons
-            $codesPostaux[$codePostalData] = $codePostal;
         }
 
         // Enregistrer les changements dans la base de données
@@ -135,8 +147,9 @@ class RegistrationController extends AbstractController
                     ->subject("Confirmation d'email")
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            $this->addFlash('success', 'Un email de confirmation vous a été envoyé. Veuillez vérifier votre adresse email pour activer votre compte.');
-            return $this->redirectToRoute('app_home');
+
+
+            return $this->redirectToRoute('app_inscription');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -150,6 +163,9 @@ class RegistrationController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        // Récupération de l'utilisateur actuellement connecté
+        $user = $this->getUser();
+
 
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
@@ -158,13 +174,16 @@ class RegistrationController extends AbstractController
 
             return $this->redirectToRoute('app_inscription');
         }
+
         $userAuthenticator->authenticateUser(
-            $this->getUser(),
+            $user,
             $authenticator,
             $request
         );
 
-        $this->addFlash('success', 'Votre adresse email a été vérifiée. Votre compte est maintenant activé.');
+
+        $this->addFlash('succes', 'Votre Email a bien été vérifiée');
+
         return $this->redirectToRoute('app_home');
     }
 }

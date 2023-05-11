@@ -6,30 +6,34 @@
 
 {% block body %}
 	<div class="container">
-		<h1>{{ categorie.nom }}</h1>
-		<p>{{ categorie.description }}</p>
+		<section class="text-center my-4">
+			<h1>{{ categorie.nom }}</h1>
+			<p>{{ categorie.description }}</p>
+		</section>
 
-		{% if prestataires|length > 0 %}
-			<h2>Prestataires proposant ce type de service :</h2>
-			<ul class="list-group">
-				{% for prestataire in prestataires %}
-					<div class="col-md-3 mb-4">
-						<div class="card" style="width: 18rem;">
-							{% for image in prestataire.images %}
-								<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="card-img-top" alt=""/>
-							{% endfor %}
-							<div class="card-body">
-								<h5 class="card-title">{{ prestataire.nom }}</h5>
-								<a href={{path('app_prestataire_detail',{'id': prestataire.id} )}} class="btn btn-primary">Voir plus</a>
+		<section class="text-center my-5">
+			<h3 class="mb-3">Prestataires proposant ce type de service :</h3>
+			{% if prestataires|length > 0 %}
+				<div class="row">
+					{% for prestataire in prestataires %}
+						<div class="col-md-3 mb-4 mx-auto">
+							<div class="card" style="width: 18rem;">
+								{% for image in prestataire.images %}
+									<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="card-img-top" alt=""/>
+								{% endfor %}
+								<div class="card-body">
+									<h5 class="card-title">{{ prestataire.nom }}</h5>
+									<a href={{path('app_prestataire_detail',{'id': prestataire.id} )}} class=" rounded-pill btn btn-success btn-block btn-lg gradient-custom-4 text-body">Découvrir</a>
+								</div>
 							</div>
 						</div>
-					</div>
-				{% endfor %}
-			</ul>
-		{% else %}
-			<div class="alert alert-warning" role="alert">
-				Aucun prestataire ne propose de services dans cette catégorie pour le moment.
-			</div>
-		{% endif %}
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="alert alert-warning" role="alert">
+					Aucun prestataire ne propose de services dans cette catégorie pour le moment.
+				</div>
+			{% endif %}
+		</section>
 	</div>
 {% endblock %}

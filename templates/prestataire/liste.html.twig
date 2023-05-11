@@ -4,33 +4,30 @@
 {% endblock %}
 
 {% block body %}
+	<header>
+		<img src="{{ asset('images/background_prestataires.jpg') }}" alt="Description de l'image" style=" height: 500px; object-fit: cover; width: 100%;">
+	</header>
 	{% include "components/_search_presta.html.twig" with{
 		form : form
 	} %}
 	<main class="categories">
-
-		<h1 class='text-center'>Nos prestataires</h1>
-
-
+		<h1 class='text-center mb-5'>Nos prestataires</h1>
 		<div class="container">
-
 			<div class="row">
 				{% for prestataire in prestataires %}
-					<div class="col-md-3 mb-4">
-						<div class="card" style="width: 18rem;">
+					<div class="col-md-3 mb-4 mx-auto">
+						<div class="text-center">
 							{% for image in prestataire.images %}
-								<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="card-img-top" alt=""/>
+								<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="rounded-circle mb-1" alt="Photo de profil de {{ prestataire.nom }}" style="width: 150px; height: 150px;">
 							{% endfor %}
-							<div class="card-body">
-								<h5 class="card-title">{{ prestataire.nom }}</h5>
-								<a href={{path('app_prestataire_detail',{'id': prestataire.id} )}} class="btn btn-primary">Voir plus</a>
-							</div>
+						</div>
+						<div class="card-body text-center">
+							<h5 class="card-title mb-2">{{ prestataire.nom }}</h5>
+							<a href="{{ path('app_prestataire_detail', {'id': prestataire.id}) }}" class="rounded-pill btn btn-success btn-block btn-lg gradient-custom-4 text-body">Découvrir</a>
 						</div>
 					</div>
 				{% endfor %}
 			</div>
-
 		</div>
-
 	</main>
 {% endblock %}

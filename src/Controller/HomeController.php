@@ -13,9 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+
 class HomeController extends AbstractController
 {
-
 
 
     #[Route('/', name: 'app_home')]
@@ -29,7 +29,7 @@ class HomeController extends AbstractController
             $data = $form->getData();
 
             $nom = $data['nom'];
-            $categories = $data['categories']->toArray();
+            $categories = $data['categories'] ? $data['categories']->getId() : null;
             $localite = $data['localite'] ? $data['localite']->getId() : null;
             $codePostal = $data['codePostal'] ? $data['codePostal']->getId() : null;
             $commune = $data['commune'] ? $data['commune']->getId() : null;
@@ -38,7 +38,7 @@ class HomeController extends AbstractController
             $pagination = $paginator->paginate(
                 $prestataires,
                 $request->query->getInt('page', 1), // Numéro de page à afficher
-                10
+                12
             ); // Nombre de résultats par page
 
             // Afficher les résultats de la recherche

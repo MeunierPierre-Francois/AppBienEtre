@@ -1,29 +1,70 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('styles/register_form.css') }}">
+{% endblock %}
 
 {% block title %}Register
 {% endblock %}
 
-
 {% block body %}
+	<section class="vh-100 bg-image" style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+		<div class="mask d-flex align-items-center h-100 gradient-custom-3">
+			<div class="container h-100">
+				<div class="row d-flex justify-content-center align-items-center h-100">
+					<div class="col-12 col-md-9 col-lg-7 col-xl-6">
+						<div class="card mx-auto" style="max-width: 600px;">
+							<div class="card-header bg-white text-center">
+								<h1 class="text-uppercase text-center mb-5">Inscription</h1>
+							</div>
+							<div class="card-body p-5">
+								{% for flash_error in app.flashes('verify_email_error') %}
+									<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+								{% endfor %}
 
-	{% for flash_error in app.flashes('verify_email_error') %}
-		<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-	{% endfor %}
+								{{ form_start(registrationForm) }}
 
-	<h1>Register</h1>
-
-	{{ form_start(registrationForm) }}
-	{{ form_row(registrationForm.email) }}
-	{{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-	{{ form_row(registrationForm.adresse_rue) }}
-	{{ form_row(registrationForm.adresse_num) }}
-	{{ form_row(registrationForm.agreeTerms) }}
-
-	<button type="submit" class="btn">Register</button>
-	{{ form_end(registrationForm) }}
-	<a href="{{ path('app_connexion') }}">Déjà membre?</a>
-
-
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.email, { 'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Email'}})}}
+								</div>
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.plainPassword, { 'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Mot de passe'}})}}
+								</div>
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.adresse_rue, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Adresse rue'}}) }}
+								</div>
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.adresse_num, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Adresse numéro'}}) }}
+								</div>
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.localite, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								</div>
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.commune, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								</div>
+								<div class="form-outline mb-4">
+									{{ form_widget(registrationForm.codePostal, {'attr': {'class': 'form-control form-control-lg'}}) }}
+								</div>
+								<div class="form-check d-flex justify-content-center mb-5">
+									{{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input me-2'}}) }}
+									{{ form_label(registrationForm.agreeTerms, "j'accepte les") }}
+									<a href="#" class="text-body">
+										<u>Conditions d'utilisation</u>
+									</a>
+								</div>
+								<div class="d-flex justify-content-center">
+									<button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body ">S'inscrire</button>
+								</div>
+								{{ form_end(registrationForm) }}
+								<p class="text-center text-muted mt-5 mb-0">Déjà membre?
+									<a href="{{ path('app_connexion') }}" class="fw-bold text-body">
+										<u>Connectez-vous ici</u>
+									</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 {% endblock %}

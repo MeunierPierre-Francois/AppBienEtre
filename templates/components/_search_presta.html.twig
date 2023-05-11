@@ -1,14 +1,67 @@
 {% block body %}
-	<h1>Trouver le prestataire qui vous convient !</h1>
-
-	{{ form_start(form) }}
-	{{ form_row(form.nom) }}
-	{{ form_row(form.categories) }}
-	{{ form_row(form.localite) }}
-	{{ form_row(form.codePostal) }}
-	{{ form_row(form.commune) }}
-	{{ form_rest(form) }}
-	<button type="submit">Rechercher</button>
-	{{ form_end(form) }}
-
+	{% block stylesheets %}<link rel="stylesheet" href="{{ asset('styles/register_form.css') }}">
+	{% endblock %}
+	<div class="container py-5 ">
+		<div>
+			<div>
+				<h3>Trouver le prestataire qui vous convient !</h3>
+			</div>
+			<div>
+				{{ form_start(form) }}
+				<div class="row">
+					<div class="col-md-6">
+						{{ form_row(form.nom,{
+							label: false,
+							attr: {
+                class: 'form-control mb-3'
+            }
+						}) }}
+					</div>
+					<div class="col-md-6">
+						{{ form_row(form.categories,{
+							label: false,
+							attr: {
+                class: 'form-control mb-3'
+            }
+						}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 mr-3">
+						{{ form_row(form.localite, {
+            label: false,
+            attr: {
+                class: 'form-control'
+            }
+        }) }}
+					</div>
+					<div class="col-md-4 ">
+						{{ form_row(form.codePostal, {
+            label: false,
+            attr: {
+                class: 'form-control'
+            }
+        }) }}
+					</div>
+					<div class="col-md-4">
+						{{ form_row(form.commune, {
+            label: false,
+            attr: {
+                class: 'form-control'
+            }
+        }) }}
+					</div>
+				</div>
+				<div>
+					<div>
+						{{ form_rest(form) }}
+					</div>
+				</div>
+				<div class="text-center">
+					<button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body mt-2">Rechercher</button>
+				</div>
+				{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
 {% endblock %}

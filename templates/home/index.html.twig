@@ -2,16 +2,11 @@
 
 {% block title %}Accueil Bien Être
 {% endblock %}
-{% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('styles/home.css') }}">
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('styles/home.css') }}">
 {% endblock %}
 
 
 {% block body %}
-
-	<div>
-		<h1 class="text-center">Bienvenue sur votre site d'espace Bien Etre</h1>
-	</div>
 
 	<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 		<ol class="carousel-indicators">
@@ -39,21 +34,24 @@
 			<span class="sr-only">Next</span>
 		</a>
 	</div>
+	<div>
+		<h1 class="text-center mt-5">Bienvenue sur SerenityPlace</h1>
+	</div>
 
 	{% include "components/_search_presta.html.twig" %}
 
 	<div class="container">
-		<h2 class="text-center py-5">Les derniers prestataires inscrit !</h2>
+		<h2 class="text-center py-5">Nos derniers prestataires inscrit !</h2>
 		<div class="row">
 			{% for prestataire in prestataires %}
-				<div class="col-md-3 mb-4">
+				<div class="col-md-3 mb-4 mx-auto">
 					<div class="card " style="width: 18rem;">
 						{% for image in prestataire.images %}
 							<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="card-img-top" alt=""/>
 						{% endfor %}
-						<div class="card-body">
+						<div class="card-body text-center">
 							<h5 class="card-title">{{ prestataire.nom }}</h5>
-							<a href={{path('app_prestataire_detail',{'id': prestataire.id} )}} class="btn btn-primary">Voir plus</a>
+							<a href={{path('app_prestataire_detail',{'id': prestataire.id} )}} class="btn btn-success btn-block btn-lg gradient-custom-4 text-body rounded-pill">Découvrir</a>
 						</div>
 					</div>
 				</div>
@@ -62,14 +60,18 @@
 	</div>
 
 	<div class="container">
-		<h2 class='text-center py-5'>La catégories du mois</h1>
+		<h2 class='text-center py-5'>Notre catégorie du mois</h1>
 		<div class="row">
 			{% for category in categories %}
 				<div class="col-md-4">
 
-					<h2>{{ category.nom }}</h2>
-					<p>{{ category.description }}</p>
-					<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-primary" type="submit">Découvrir</a>
+					<div class="d-flex justify-content-center align-items-center h-100">
+						<div>
+							<h2>{{ category.nom }}</h2>
+							<p>{{ category.description }}</p>
+							<a href={{path('app_categorie_detail',{'id': category.id} )}} class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" type="submit">Découvrir</a>
+						</div>
+					</div>
 				</div>
 				<div class="col-md-8">
 					<img src="{{ asset('images/Massage_thérapeutique1.jpg') }}" class="img-fluid" alt="{{ category.nom }}">
@@ -77,5 +79,6 @@
 			{% endfor %}
 		</div>
 	</div>
+
 
 </div>{% endblock %}
