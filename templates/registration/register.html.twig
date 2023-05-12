@@ -27,7 +27,8 @@
 									{{ form_widget(registrationForm.email, { 'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Email'}})}}
 								</div>
 								<div class="form-outline mb-4">
-									{{ form_widget(registrationForm.plainPassword, { 'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Mot de passe'}})}}
+									{{ form_widget(registrationForm.plainPassword, { 'attr': {'class': form_errors(registrationForm.plainPassword) ?'form-control form-control-lg is-invalid' : 'form-control form-control-lg', 'placeholder': 'Mot de passe'}})}}
+									{{ form_errors(registrationForm.plainPassword) }}
 								</div>
 								<div class="form-outline mb-4">
 									{{ form_widget(registrationForm.adresse_rue, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Adresse rue'}}) }}

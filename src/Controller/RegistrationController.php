@@ -172,14 +172,14 @@ class RegistrationController extends AbstractController
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
-            return $this->redirectToRoute('app_inscription');
+            return $this->redirectToRoute('app_home');
         }
 
-        $userAuthenticator->authenticateUser(
+        /* $userAuthenticator->authenticateUser(
             $user,
             $authenticator,
             $request
-        );
+        );*/
 
 
         $this->addFlash('succes', 'Votre Email a bien été vérifiée');

@@ -1,26 +1,37 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('styles/register_form.css') }}">
+{% endblock %}
 
 {% block body %}
-	<div class="container mt-4">
-		<h1 class="text-center">S'inscrire comme pestataire</h1>
+	<div class=" mx-auto" style="max-width: 600px;">
+		<div class="card-header bg-white text-center">
+			<h1 class="text-uppercase text-center mb-5">S'inscrire comme pestataire</h1>
+		</div>
 		{{ form_start(form) }}
-		<div class="form-group">
-			{{form_label(form.nom)}}
-			{{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+		<div class="form-outline mb-4">
+			{{ form_widget(form.nom, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Nom'}}) }}
 		</div>
-		<div class="form-group">
-			{{form_label(form.site_internet)}}
-			{{ form_widget(form.site_internet, {'attr': {'class': 'form-control'}}) }}
+		<div class="form-outline mb-4">
+
+			{{ form_widget(form.site_internet, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Site Internet'}}) }}
 		</div>
-		<div class="form-group">
-			{{form_label(form.num_tel)}}
-			{{ form_widget(form.num_tel, {'attr': {'class': 'form-control'}}) }}
+		<div class="form-outline mb-4">
+
+			{{ form_widget(form.num_tel, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Numéro de téléhphonne'}}) }}
 		</div>
-		<div class="form-group">
-			{{form_label(form.num_tva)}}
-			{{ form_widget(form.num_tva, {'attr': {'class': 'form-control'}}) }}
+		<div class="form-outline mb-4">
+			{{ form_widget(form.num_tva, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Numéro de TVA'}}) }}
 		</div>
-		<button type="submit" class="btn btn-primary mt-3">Devenir prestataire</button>
+		<div class="form-outline mb-4">
+			{{ form_widget(form.categories, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Categories'}}) }}
+		</div>
+		<div class="form-outline mb-4">
+			{{ form_widget(form.images, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Photo de profil'}}) }}
+		</div>
+		<div class="d-flex justify-content-center">
+			<button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Devenir prestataire</button>
+		</div>
 		{{ form_end(form) }}
 	</div>
 {% endblock %}

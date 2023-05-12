@@ -38,12 +38,7 @@ class UtilisateurAuthenticator extends AbstractLoginFormAuthenticator
         // Récupérer l'utilisateur
         $utilisateur = $this->utilisateurRepository->findOneByEmail($email);
 
-        // Vérifier si l'utilisateur est banni
 
-        /*if ($utilisateur && $utilisateur->isBanned()) {
-
-            throw new AuthenticationException("Votre compte a été banni.");
-        }*/
 
         if ($utilisateur && $utilisateur->isVerified()) {
 

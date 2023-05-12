@@ -11,7 +11,6 @@ use App\Entity\Utilisateur;
 use App\Service\PictureService;
 use App\Form\PrestataireFormType;
 use App\Form\PrestataireSearchType;
-use App\Service\PrestataireService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
