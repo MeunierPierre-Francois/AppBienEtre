@@ -12,25 +12,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/connexion', name: 'app_connexion')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $user = $this->getUser();
-        if ($user) {
-            // Vérifier si l'email de l'utilisateur est vérifié
-            if (!$user->isVerified()) {
-                // Si l'email n'a pas été vérifié, renvoyer l'utilisateur à la page de confirmation
-                return $this->redirectToRoute('app_verify_email');
-            }
-
-            // Authentifier l'utilisateur
-            $authenticator = $this->get('app.authenticator');
-            $token = $authenticator->authenticateUser($user, 'main');
-
-            // Connecter l'utilisateur
-            if ($user->isVerified()) {
-                $this->get('security.token_storage')->setToken($token);
-                $this->get('session')->set('_security_main', serialize($token));
-            }
-
-            // Rediriger l'utilisateur vers la page d'accueil
+        if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
 

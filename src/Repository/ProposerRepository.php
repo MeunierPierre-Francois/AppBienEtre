@@ -79,7 +79,7 @@ class ProposerRepository extends ServiceEntityRepository
      * @return PaginationInterface
      * 
      
-    public function findBySearch(SearchData $searchData): array
+    public function findBySearch(SearchData $searchData): array*
     {
         $data = $this->createQueryBuilder('pr');
         if (!empty($searchData->prestataire)) {

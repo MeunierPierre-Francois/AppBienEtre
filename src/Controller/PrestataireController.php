@@ -7,6 +7,8 @@ use Knp\Component\Pager\PaginatorInterface;
 use App\Entity\Images;
 use App\Entity\Proposer;
 use App\Entity\Prestataire;
+use App\Entity\Promotion;
+use App\Entity\Stage;
 use App\Entity\Utilisateur;
 use App\Service\PictureService;
 use App\Form\PrestataireFormType;
@@ -16,6 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
+
 
 
 
@@ -122,9 +128,9 @@ class PrestataireController extends AbstractController
     }
 
     #[Route('/prestataires/profil/{id}', name: 'app_prestataire_detail')]
-    public function show(EntityManagerInterface $entityManager, int $id): Response
+    public function show(EntityManagerInterface $entityManager, int $id, PrestataireRepository $prestataireRepository): Response
     {
-        // $prestataire = $entityManager->getRepository(Prestataire::class)->find($id);
+
         $prestataire = $entityManager->getRepository(Prestataire::class)
             ->createQueryBuilder('p')
             ->leftJoin('p.utilisateur', 'u')
@@ -142,12 +148,72 @@ class PrestataireController extends AbstractController
 
         $categories = $entityManager->getRepository(Proposer::class)->findCategoriesByPrestataireId($id);
 
+        $currentDate = new \DateTime();
+
+        $promotions = $entityManager->getRepository(Promotion::class)
+            ->createQueryBuilder('p')
+            ->leftJoin('p.categorie_service', 'cs')
+            ->addSelect('cs')
+            ->where('p.prestataire = :prestataire_id')
+            ->andWhere('p.affichage_de <= :current_date')
+            ->andWhere('p.affichage_jusque >= :current_date')
+            ->setParameter('prestataire_id', $id)
+            ->setParameter('current_date', $currentDate)
+            ->getQuery()
+            ->getResult();
+
+
+
+        $stages = $entityManager->getRepository(Stage::class)
+            ->createQueryBuilder('s')
+            ->where('s.prestataire = :prestataire_id')
+            ->andWhere('s.affichage_de <= :current_date')
+            ->andWhere('s.affichage_jusque >= :current_date')
+            ->setParameter('prestataire_id', $id)
+            ->setParameter('current_date', $currentDate)
+            ->getQuery()
+            ->getResult();
+
+
+        $images = [
+            'image1.jpg',
+            'image2.jpg',
+            'image3.jpg',
+            'image4.jpg',
+            'image5.jpg',
+            'image6.jpg',
+
+        ];
+
+        $prestatairesSimilaires = $prestataireRepository->findPrestatairesSimilaires($prestataire);
+
+
+
+
         return $this->render('prestataire/detail.html.twig', [
             'prestataire' => $prestataire,
             'categories' => $categories,
+            'stages' => $stages,
+            'promotions' => $promotions,
+            'images' => $images,
+            'prestatairesSimilaires' => $prestatairesSimilaires,
+
 
         ]);
     }
+
+    #[Route('/prestataires/promotion', name: 'app_promotion_telechargement')]
+    public function telechargement(string $pdf): BinaryFileResponse
+    {
+        $cheminFichier = $this->getParameter('chemin_dossier_promotions') . '/' . $pdf;
+
+        $response = new BinaryFileResponse($cheminFichier);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $pdf);
+
+        return $response;
+    }
+
+
 
     /*#[Route('/prestataires/recherche', name: 'app_prestataire_recherche')]
     public function search(Request $request, PrestataireRepository $prestataireRepository, PaginatorInterface $paginator): Response

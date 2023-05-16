@@ -33,7 +33,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/inscription', name: 'app_inscription')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher,  EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher,  EntityManagerInterface $entityManager, UserAuthenticatorInterface $userAuthenticator, UtilisateurAuthenticator $authenticator): Response
     {
 
         // On récupère les données pour alimenter les champs de choix
@@ -149,7 +149,7 @@ class RegistrationController extends AbstractController
             );
 
 
-            return $this->redirectToRoute('app_inscription');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -159,12 +159,9 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserAuthenticatorInterface $userAuthenticator, UtilisateurAuthenticator $authenticator): Response
+    public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        // Récupération de l'utilisateur actuellement connecté
-        $user = $this->getUser();
 
 
         try {
@@ -172,17 +169,11 @@ class RegistrationController extends AbstractController
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_inscription');
         }
 
-        /* $userAuthenticator->authenticateUser(
-            $user,
-            $authenticator,
-            $request
-        );*/
 
-
-        $this->addFlash('succes', 'Votre Email a bien été vérifiée');
+        $this->addFlash('success', 'Votre Email a bien été vérifié');
 
         return $this->redirectToRoute('app_home');
     }

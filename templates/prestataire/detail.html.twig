@@ -132,6 +132,138 @@
 				</div>
 			{% endif %}
 		</section>
+
+
+		<section class='mb-5'>
+			<h2 class="mb-3">Stages proposé</h2>
+			{% if stages|length > 0 %}
+				<div class="row">
+					<table class="table">
+						<thead class="thead-dark">
+							<tr>
+								<th>Date de début</th>
+								<th>Date de fin</th>
+								<th>Nom</th>
+								<th>Description</th>
+								<th>Tarif</th>
+								<th>Info complémentaire</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for stage in stages %}
+								<tr>
+									<td>{{ stage.debut|date('d-m-Y') }}</td>
+									<td>{{ stage.fin|date('d-m-Y') }}</td>
+									<td>{{ stage.nom }}</td>
+									<td>{{ stage.description }}</td>
+									<td>{{ stage.tarif }}€</td>
+									<td>{{ stage.infoComplementaire }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+			{% else %}
+				<div class="alert alert-warning" role="alert">
+					Ce prestataire ne propose pas de stages pour le moment.
+				</div>
+			{% endif %}
+
+
+		</section>
+		<section class='mb-5'>
+			<h2 class="mb-3">Promotion du moment</h2>
+			{% if promotions|length > 0 %}
+				<div class="row">
+					<table class="table">
+						<thead class="thead-dark">
+							<tr>
+								<th>Date de début</th>
+								<th>Date de fin</th>
+								<th>Nom</th>
+								<th>Description</th>
+								<th>Catégorie</th>
+								<th>Doc</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for promotion in promotions %}
+								<tr>
+									<td>{{ promotion.debut|date('d-m-Y') }}</td>
+									<td>{{ promotion.fin|date('d-m-Y') }}</td>
+									<td>{{ promotion.nom }}</td>
+									<td>{{ promotion.description }}</td>
+									<td>{{ promotion.categorieService.nom }}</td>
+									<td>
+										<a href="{{ path('app_promotion_telechargement', { 'pdf': promotion.pdf }) }}" download class="btn btn-primary">Télécharger</a>
+									</td>
+
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+			{% else %}
+				<div class="alert alert-warning" role="alert">
+					Ce prestataire ne propose pas de stages pour le moment.
+				</div>
+			{% endif %}
+
+
+		</section>
+
+		<section class='mb-5'>
+			<div id="carouselExample" class="carousel slide" data-ride="carousel">
+				<ol class="carousel-indicators">
+					{% for index, image in images %}
+						<li data-target="#carouselExample" data-slide-to="{{ index }}" {% if loop.first %} class="active" {% endif %}></li>
+					{% endfor %}
+				</ol>
+				<div class="carousel-inner">
+					{% for index, image in images %}
+						<div class="carousel-item {% if loop.first %}active{% endif %}">
+							<img src="{{ asset('uploads/prestataires/gallerie/' ~ image) }}" class="d-block w-100" alt="Image">
+						</div>
+					{% endfor %}
+				</div>
+				<a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+		</section>
+		<section class="text-center my-5">
+			<h2 class="mb-3 ">Prestataire similaire</h2>
+			{% if prestatairesSimilaires|length > 0 %}
+				<div class="container">
+					<div class="row">
+						{% for prestataireSimilaire in prestatairesSimilaires %}
+							<div class="col-md-3 mb-4 mx-auto">
+								<div class="text-center">
+									{% for image in prestataireSimilaire.images %}
+										<img src="{{ asset('uploads/prestataires/mini/300x300-' ~ image.nom) }}" class="rounded-circle mb-1" alt="Photo de profil de {{ prestataireSimilaire.nom }}" style="width: 150px; height: 150px;">
+									{% endfor %}
+								</div>
+								<div class="card-body text-center">
+									<h5 class="card-title mb-2">{{ prestataireSimilaire.nom }}</h5>
+									<a href="{{ path('app_prestataire_detail', {'id': prestataireSimilaire.id}) }}" class="rounded-pill btn btn-success btn-block btn-lg gradient-custom-4 text-body">Découvrir</a>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% else %}
+				<div class="alert alert-warning" role="alert">
+					Ce prestataire ne propose pas encore de service pour le moment.
+				</div>
+			{% endif %}
+		</section>
 	</div>
 
 </div></div>{% endblock %}

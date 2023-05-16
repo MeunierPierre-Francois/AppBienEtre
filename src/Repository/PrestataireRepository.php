@@ -100,6 +100,29 @@ class PrestataireRepository extends ServiceEntityRepository
         return $prestataires;
     }
 
+    public function findPrestatairesSimilaires(Prestataire $prestataire)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->innerJoin('p.utilisateur', 'utilisateur')
+            ->innerJoin('utilisateur.commune', 'commune')
+            ->innerJoin('p.proposers', 'proposer')
+            ->innerJoin('proposer.categorie_service', 'categorie')
+            ->andWhere('commune = :commune')
+            ->andWhere('p.id <> :prestataireId')
+            ->andWhere('categorie IN (
+                SELECT categorie2 
+                FROM App\Entity\Prestataire p2 
+                JOIN p2.proposers proposer2 
+                JOIN proposer2.categorie_service categorie2 
+                WHERE p2.id = :prestataireId
+            )')
+            ->setParameter('commune', $prestataire->getUtilisateur()->getCommune())
+            ->setParameter('prestataireId', $prestataire->getId())
+            ->setMaxResults(5);
+
+        return $qb->getQuery()->getResult();
+    }
+
 
 
 
@@ -107,7 +130,7 @@ class PrestataireRepository extends ServiceEntityRepository
     //     * @return Prestataire[] Returns an array of Prestataire objects
     //     */
     //    public function findByExampleField($value): array
-    //    {
+    //    {**
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')
     //            ->setParameter('val', $value)
